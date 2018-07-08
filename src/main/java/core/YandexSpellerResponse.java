@@ -3,7 +3,7 @@ package core;
 import java.util.ArrayList;
 import java.util.List;
 
-public class YandexSpellerAnswer {
+public class YandexSpellerResponse {
     public Integer code;
     public Integer pos;
     public Integer row;

@@ -6,18 +6,15 @@ import enums.Formats;
 import enums.Languages;
 import enums.Options;
 import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import static enums.Parameters.*;
 import static org.hamcrest.Matchers.lessThan;
@@ -74,8 +71,8 @@ public class YandexSpellerApi {
         return new ApiBuilder(api);
     }
 
-    public static List<YandexSpellerAnswer> getYandexSpellerAnswers(Response response) {
-        return new Gson().fromJson(response.asString().trim(), new TypeToken<List<YandexSpellerAnswer>>() {
+    public static List<YandexSpellerResponse> getYandexSpellerResponse(Response response) {
+        return new Gson().fromJson(response.asString().trim(), new TypeToken<List<YandexSpellerResponse>>() {
         }.getType());
     }
 
@@ -85,16 +82,6 @@ public class YandexSpellerApi {
                 .expectHeader("Connection", "keep-alive")
                 .expectResponseTime(lessThan(20000L))
                 .expectStatusCode(HttpStatus.SC_OK)
-                .build();
-    }
-
-    public static RequestSpecification baseRequestConfiguration() {
-        return new RequestSpecBuilder()
-                .setAccept(ContentType.XML)
-                .setRelaxedHTTPSValidation()
-                .addHeader("custom header2", "header2.value")
-                .addQueryParam("requestID", new Random().nextLong())
-                .setBaseUri(YANDEX_SPELLER_API_URI)
                 .build();
     }
 }
