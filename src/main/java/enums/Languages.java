@@ -5,9 +5,9 @@ public enum Languages {
     EN("en"),
     UK("uk");
 
-    public String language;
+    public String languageLocale;
 
     Languages(String language) {
-        this.language = language;
+        this.languageLocale = language;
     }
 }
