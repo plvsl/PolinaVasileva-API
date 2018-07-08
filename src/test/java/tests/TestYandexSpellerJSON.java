@@ -5,7 +5,6 @@ import core.YandexSpellerResponse;
 import enums.Formats;
 import enums.Languages;
 import enums.Options;
-import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -14,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static core.YandexSpellerApi.YANDEX_SPELLER_API_URI;
-import static enums.Parameters.LANGUAGE;
-import static enums.Parameters.TEXT;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -23,50 +20,39 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TestYandexSpellerJSON {
     private final String EXAMPLE = "mailerr";
     private final String[] EXAMPLE_ARR = new String[]{"mailer", "mail err", "mail error"};
-
-    //------------------------------------WITHOUT BUILDER---------------------------------------------
     //SOME TESTS FAILING DUE TO BUGS
 
     @Test
     public void sendValidGetRequestWithSuggestions() {
-        RestAssured
-                .given()
-                .param(TEXT.parameter, EXAMPLE)
-                .when()
-                .get(YANDEX_SPELLER_API_URI)
-                .prettyPeek()
+        YandexSpellerApi.with()
+                .text(EXAMPLE)
+                .callApi()
                 .then()
-                .specification(YandexSpellerApi.successResponse())
-                .assertThat()
-                .body(Matchers
-                        .stringContainsInOrder(Arrays.asList(EXAMPLE_ARR)));
+                .specification(YandexSpellerApi
+                        .successResponse()
+                        .body(Matchers
+                                .stringContainsInOrder(Arrays.asList(EXAMPLE_ARR))));
     }
 
     @Test
     public void sendValidGetRequestWithSuggestionsWithSettingLanguage() {
-        RestAssured
-                .given()
-                .param(TEXT.parameter, EXAMPLE)
-                .param(LANGUAGE.parameter, Languages.EN)
-                .when()
-                .get(YANDEX_SPELLER_API_URI)
-                .prettyPeek()
+        YandexSpellerApi.with()
+                .language(Languages.EN)
+                .text(EXAMPLE)
+                .callApi()
                 .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_OK)
-                .body(Matchers
-                        .stringContainsInOrder(Arrays.asList(EXAMPLE_ARR)));
+                .specification(YandexSpellerApi
+                        .successResponse()
+                        .body(Matchers
+                                .stringContainsInOrder(Arrays.asList(EXAMPLE_ARR))));
     }
 
     @Test
     public void sendInvalidGetRequestWithSuggestionsWithSettingInvalidLanguage() {
-        RestAssured
-                .given()
-                .param(TEXT.parameter, EXAMPLE)
-                .param(LANGUAGE.parameter, "ch")
-                .when()
-                .get(YANDEX_SPELLER_API_URI)
-                .prettyPeek()
+        YandexSpellerApi.with()
+                .language(Languages.NON_VALID)
+                .text(EXAMPLE)
+                .callApi()
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_BAD_REQUEST);
@@ -74,20 +60,15 @@ public class TestYandexSpellerJSON {
 
     @Test
     public void sendValidGetRequestWithSuggestionsWithSettingNotCorrectLanguage() {
-        RestAssured
-                .given()
-                .param(TEXT.parameter, EXAMPLE)
-                .param(LANGUAGE.parameter, Languages.RU)
-                .when()
-                .get(YANDEX_SPELLER_API_URI)
-                .prettyPeek()
+        YandexSpellerApi.with()
+                .language(Languages.RU)
+                .text(EXAMPLE)
+                .callApi()
                 .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_OK)
-                .body(Matchers.equalTo("[]"));
+                .specification(YandexSpellerApi
+                        .successResponse()
+                        .body(Matchers.equalTo("[]")));
     }
-
-    //------------------------------------WITH BUILDER---------------------------------------------
 
     @Test
     public void sendValidGetRequestWithSuggestionsWithSettingAllOptionsSetDefault() {
