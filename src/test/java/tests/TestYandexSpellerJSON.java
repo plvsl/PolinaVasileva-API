@@ -1,7 +1,6 @@
 package tests;
 
 import core.YandexSpellerApi;
-import core.YandexSpellerResponse;
 import enums.Formats;
 import enums.Languages;
 import enums.Options;
@@ -10,11 +9,8 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static core.YandexSpellerApi.YANDEX_SPELLER_API_URI;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 
 public class TestYandexSpellerJSON {
