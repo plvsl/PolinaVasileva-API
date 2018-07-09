@@ -102,26 +102,19 @@ public class TestYandexSpellerJSON {
 
     @Test
     public void sendValidRequestWithUrlWithoutOptions() {
-        List<YandexSpellerResponse> response =
-                YandexSpellerApi
-                        .getYandexSpellerResponse(
-                                YandexSpellerApi
-                                        .with()
-                                        .text("this url" + YANDEX_SPELLER_API_URI + "should havesuggestions")
-                                        .callApi());
-        assertThat(response.size(), equalTo(4));
-        assertThat(response.get(0).s.size(), equalTo(1));
-        assertThat(response.get(1).s.size(), equalTo(4));
-        assertThat(response.get(2).s.size(), equalTo(1));
-        assertThat(response.get(3).s.size(), equalTo(1));
-        assertThat(response.get(0).word, equalTo("urlhttps"));
-        assertThat(response.get(0).s.get(0), equalTo("url https"));
-        assertThat(response.get(1).word, equalTo("spellservice"));
-        assertThat(response.get(1).s.get(1), equalTo("spell service"));
-        assertThat(response.get(2).word, equalTo("checkTextshould"));
-        assertThat(response.get(2).s.get(0), equalTo("check Text should"));
-        assertThat(response.get(3).word, equalTo("havesuggestions"));
-        assertThat(response.get(3).s.get(0), equalTo("have suggestions"));
+        YandexSpellerApi
+                .with()
+                .text("this url" + YANDEX_SPELLER_API_URI + "should havesuggestions")
+                .callApi().then().body(
+                        Matchers.allOf(
+                            Matchers.containsString("urlhttps"),
+                            Matchers.containsString("url https"),
+                            Matchers.containsString("spellservice"),
+                            Matchers.containsString("spell service"),
+                            Matchers.containsString("checkTextshould"),
+                            Matchers.containsString("check Text should"),
+                            Matchers.containsString("havesuggestions"),
+                            Matchers.containsString("have suggestions")));
     }
 
     @Test
